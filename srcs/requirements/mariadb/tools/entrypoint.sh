@@ -1,6 +1,9 @@
 #!/bin/bash
 set -euo pipefail
 
+echo "Waiting for MariaDB installation to complete..."
+sleep 10
+
 # Env from .env (compose) and secrets
 DB_NAME="${MYSQL_DATABASE:?}"
 DB_USER="${MYSQL_USER:?}"
@@ -12,11 +15,11 @@ ROOT_PASS="$(cat "${ROOT_PASS_FILE}")"
 
 # Initialize database if empty
 if [ ! -d "/var/lib/mysql/mysql" ]; then
-  echo "[mariadb] Initializing data directory..."
-  mariadb-install-db --user=mysql --datadir=/var/lib/mysql --auth-root-authentication-method=normal >/dev/null
+    echo "[mariadb] Initializing data directory..."
+    mariadb-install-db --user=mysql --datadir=/var/lib/mysql --auth-root-authentication-method=normal >/dev/null
 
-  echo "[mariadb] Bootstrapping..."
-  mariadbd --user=mysql --datadir=/var/lib/mysql --skip-networking --socket=/run/mysqld/mysqld.sock --pid-file=/run/mysqld/mysqld.pid --bootstrap <<SQL
+    echo "[mariadb] Bootstrapping..."
+    mariadbd --user=mysql --datadir=/var/lib/mysql --skip-networking --socket=/run/mysqld/mysqld.sock --pid-file=/run/mysqld/mysqld.pid --bootstrap <<SQL
 FLUSH PRIVILEGES;
 ALTER USER 'root'@'localhost' IDENTIFIED BY '${ROOT_PASS}';
 CREATE DATABASE IF NOT EXISTS \`${DB_NAME}\` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;

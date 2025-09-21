@@ -115,7 +115,7 @@ ps: ## Show service status
 .PHONY: clean
 clean: ## Down + remove local images/volumes/networks (keeps bind-mounted data)
 	$(call ensure_env)
-	$(call compose, down -v --rmi local --remove-orphans || true)
+	$(call compose, down --remove-orphans || true)
 
 .PHONY: fclean
 fclean: clean ## clean + delete host data directories + remove Docker volumes

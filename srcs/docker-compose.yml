@@ -32,7 +32,6 @@ services:
     restart: always
     env_file:
       - .env
-
     environment:
       - MYSQL_DATABASE=${MYSQL_DATABASE}
       - MYSQL_USER=${MYSQL_USER}
@@ -46,12 +45,6 @@ services:
       - db_data:/var/lib/mysql
     networks:
       - inception
-    healthcheck:
-      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -u root --password=$$(cat ${MYSQL_ROOT_PASSWORD_FILE}) || exit 1"]
-      interval: 5s
-      timeout: 3s
-      retries: 30
-      start_period: 10s
 
   wordpress:
     container_name: wordpress
@@ -61,8 +54,7 @@ services:
       dockerfile: Dockerfile
     restart: always
     depends_on:
-      mariadb:
-        condition: service_healthy
+      - mariadb
     env_file:
       - .env
     environment:
@@ -88,12 +80,6 @@ services:
       - wp_data:/var/www/html
     networks:
       - inception
-    healthcheck:
-      test: ["CMD-SHELL", "bash -c '</dev/tcp/127.0.0.1/${PHP_FPM_PORT}' || exit 1"]
-      interval: 5s
-      timeout: 3s
-      retries: 30
-      start_period: 10s
 
   nginx:
     container_name: nginx
@@ -103,8 +89,7 @@ services:
       dockerfile: Dockerfile
     restart: always
     depends_on:
-      wordpress:
-        condition: service_healthy
+      - wordpress
     env_file:
       - .env
     environment:
@@ -122,6 +107,3 @@ services:
 networks:
   inception:
     name: ${INCEPTION_NET}
-
-
-#hello darkness my friend
