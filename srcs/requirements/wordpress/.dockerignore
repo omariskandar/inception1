@@ -1,0 +1,27 @@
+# Ignore version control
+.git
+.gitignore
+
+# Ignore editor/OS junk
+*.swp
+*.swo
+*.DS_Store
+*.bak
+*.tmp
+
+# Ignore logs
+*.log
+
+# Ignore secrets (never copy them inside images!)
+secrets/
+*.env
+*.key
+*.crt
+
+# Ignore host-only files
+README*
+*.md
+
+# Ignore backup configs/scripts
+conf/*.example
+tools/*.sh~
